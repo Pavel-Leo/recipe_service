@@ -1,7 +1,8 @@
 from typing import Tuple
+
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite,
+from .models import Favorite, Ingredient, Recipe, RecipeIngredient, Tag
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -14,6 +15,7 @@ class TagAdmin(admin.ModelAdmin):
     search_fields: Tuple[str] = ('name',)
     list_editable: Tuple[str] = ('color', 'slug', 'name')
     prepopulated_fields: Tuple[str] = {'slug': ('name',)}
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Recipe)
@@ -23,6 +25,7 @@ class RecipeAdmin(admin.ModelAdmin):
     list_editable: Tuple[str] = ('tags',)
     readonly_fields: Tuple[str] = ('favorite_count',)
     inlines: Tuple[RecipeIngredientInline] = (RecipeIngredientInline,)
+    empty_value_display = '-пусто-'
 
 
 @admin.register(Ingredient)
@@ -30,3 +33,12 @@ class IngredientAdmin(admin.ModelAdmin):
     list_display: Tuple[str] = ('name', 'measurement_unit')
     list_filter: Tuple[str] = ('name',)
     search_fields: Tuple[str] = ('name',)
+    empty_value_display = '-пусто-'
+
+
+@admin.register(Favorite)
+class FavoriteAdmin(admin.ModelAdmin):
+    list_display: Tuple[str] = ('user', 'recipe')
+    list_filter: Tuple[str] = ('user', 'recipe')
+    search_fields: Tuple[str] = ('user__username', 'recipe__name')
+    empty_value_display = '-пусто-'
