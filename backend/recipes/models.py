@@ -106,6 +106,9 @@ class Recipe(models.Model):
         verbose_name: str = 'рецепт'
         verbose_name_plural: str = 'рецепты'
 
+    def favorite_count(self) -> int:
+        return self.favorites.count()
+
     def __str__(self) -> str:
         return self.name[:TEXT_SYMBOLS]
 
