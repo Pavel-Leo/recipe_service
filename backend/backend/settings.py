@@ -107,7 +107,7 @@ MEDIA_ROOT = '/media'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-# AUTH_USER_MODEL = 'users.CustomUser'
+AUTH_USER_MODEL = 'users.User'
 
 
 REST_FRAMEWORK = {
