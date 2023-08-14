@@ -1,7 +1,7 @@
 from typing import Tuple
-from django.contrib import admin
 
-from users.models import User, Subscription
+from django.contrib import admin
+from users.models import Subscription, User
 
 
 @admin.register(User)
@@ -30,16 +30,7 @@ class CustomUserAdmin(admin.ModelAdmin):
 
 @admin.register(Subscription)
 class SubscriptionAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = (
-        'user',
-        'author',
-    )
-    search_fields: Tuple[str] = (
-        'user',
-        'author',
-    )
-    list_filter: Tuple[str] = (
-        'user',
-        'author',
-    )
-    empty_value_display = '-пусто-'
+    list_display: Tuple[str] = ('user', 'author')
+    list_filter: Tuple[str] = ('user', 'author')
+    search_fields: Tuple[str] = ('user__username', 'author__username')
+    empty_value_display: str = '-пусто-'

@@ -1,8 +1,7 @@
 from typing import Tuple
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, Tag, RecipeIngredient, Subscription
-
+from .models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite, 
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
