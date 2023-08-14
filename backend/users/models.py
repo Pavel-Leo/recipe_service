@@ -8,7 +8,7 @@ class UserRole(models.TextChoices):
 
 
 class User(AbstractUser):
-    """Модель пользователя"""
+    """Модель пользователя."""
 
     role = models.CharField(
         'роль пользователя',
@@ -49,6 +49,7 @@ class User(AbstractUser):
 
 
 class Subscription(models.Model):
+    """Модель подписок на автора рецептов."""
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,

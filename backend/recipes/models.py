@@ -1,4 +1,3 @@
-from datetime import datetime
 from typing import List
 
 from django.core.validators import MinValueValidator
@@ -9,7 +8,7 @@ TEXT_SYMBOLS: int = 20
 
 
 class Ingredient(models.Model):
-    """Модель ингредиентов"""
+    """Модель ингредиентов."""
 
     name = models.CharField(
         'Название ингредиента',
@@ -32,7 +31,7 @@ class Ingredient(models.Model):
 
 
 class Tag(models.Model):
-    """Модель тэгов"""
+    """Модель тэгов."""
 
     name = models.CharField(
         'Название тэга',
@@ -62,7 +61,7 @@ class Tag(models.Model):
 
 
 class Recipe(models.Model):
-    """Модель рецептов"""
+    """Модель рецептов."""
 
     author = models.ForeignKey(
         User,
@@ -78,11 +77,11 @@ class Recipe(models.Model):
     image = models.ImageField(
         'Изображение рецепта',
         upload_to='recipes_images/',
-        blank=False,
+        blank=True,
     )
     text = models.TextField(
         'Описание рецепта',
-        blank=True,
+        blank=False,
     )
     ingredients = models.ManyToManyField(
         Ingredient,
@@ -112,7 +111,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredient(models.Model):
-    """Модель для связи ингредиентов в рецептах с указанием количества"""
+    """Модель для связи ингредиентов в рецептах с указанием количества."""
 
     recipe = models.ForeignKey(
         Recipe,
@@ -138,12 +137,39 @@ class RecipeIngredient(models.Model):
         ordering: List[str] = ['-id']
         verbose_name: str = 'Ингредиент рецепта'
         verbose_name_plural: str = 'Ингредиенты рецептов'
-        constraints = (
-            models.UniqueConstraint(
-                fields=('recipe', 'ingredient'),
-                name='unique_recipe_ingredient',
-            )
+        constraints = models.UniqueConstraint(
+            fields=('recipe', 'ingredient'),
+            name='unique_recipe_ingredient',
         )
 
     def __str__(self) -> str:
         return self.ingredient.name[:TEXT_SYMBOLS]
+
+
+class Favorite(models.Model):
+    """Модель для добавления рецептов в избранное."""
+
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Пользователь',
+    )
+    recipe = models.ForeignKey(
+        Recipe,
+        on_delete=models.CASCADE,
+        related_name='favorites',
+        verbose_name='Рецепт',
+    )
+
+    class Meta:
+        ordering: List[str] = ['-id']
+        verbose_name: str = 'избранный рецепт'
+        verbose_name_plural: str = 'избранные рецепты'
+        constraints = models.UniqueConstraint(
+            fields=('user', 'recipe'),
+            name='unique_favorite',
+        )
+
+    def __str__(self) -> str:
+        return f'{self.user.username} добавил {self.recipe.name} в избранное'
