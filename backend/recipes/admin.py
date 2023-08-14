@@ -1,7 +1,12 @@
 from typing import Tuple
 from django.contrib import admin
 
-from .models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite, 
+from .models import Ingredient, Recipe, Tag, RecipeIngredient, Favorite,
+
+
+class RecipeIngredientInline(admin.TabularInline):
+    model = RecipeIngredient
+
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
@@ -17,6 +22,7 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
     list_editable: Tuple[str] = ('tags',)
     readonly_fields: Tuple[str] = ('favorite_count',)
+    inlines: Tuple[RecipeIngredientInline] = (RecipeIngredientInline,)
 
 
 @admin.register(Ingredient)
