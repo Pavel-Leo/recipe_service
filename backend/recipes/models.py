@@ -49,6 +49,7 @@ class Tag(models.Model):
         max_length=100,
         blank=False,
         unique=True,
+        db_index=True,
     )
 
     class Meta:
@@ -68,6 +69,7 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор рецепта',
+        db_index=True,
     )
     name = models.CharField(
         'Название рецепта',
@@ -92,6 +94,7 @@ class Recipe(models.Model):
         Tag,
         verbose_name='Тэги',
         related_name='recipes',
+        db_index=True,
     )
     cooking_time = models.PositiveIntegerField(
         'Время приготовления в минутах',
@@ -121,12 +124,14 @@ class RecipeIngredient(models.Model):
         on_delete=models.CASCADE,
         related_name='recipe_ingredients',
         verbose_name='Рецепты',
+        db_index=True,
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         related_name='recipe_ingredients',
         verbose_name='Связанные ингредиенты',
+        db_index=True,
     )
     amount = models.PositiveSmallIntegerField(
         'Количество ингредиента',
@@ -157,6 +162,7 @@ class Favorite(models.Model):
         on_delete=models.CASCADE,
         related_name='favorites',
         verbose_name='Пользователь',
+        db_index=True,
     )
     recipe = models.ForeignKey(
         Recipe,
@@ -186,6 +192,7 @@ class ShoppingCart(models.Model):
         on_delete=models.CASCADE,
         related_name='shopping_cart',
         verbose_name='Пользователь',
+        db_index=True,
     )
     recipe = models.ForeignKey(
         Recipe,
@@ -199,7 +206,7 @@ class ShoppingCart(models.Model):
         verbose_name: str = 'Список для покупок'
         verbose_name_plural: str = 'Список для покупок'
         constraints = models.UniqueConstraint(
-            fields=('user', 'recipe'), name='unique_shopping_cart'
+            fields=('user', 'recipe'), name='unique_shopping_cart',
         )
 
     def __str__(self) -> str:
