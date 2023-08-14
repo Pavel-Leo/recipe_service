@@ -5,6 +5,8 @@ from django.core.validators import MinValueValidator
 from django.db import models
 from users.models import User
 
+TEXT_SYMBOLS: int = 20
+
 
 class Ingredient(models.Model):
     """Модель ингредиентов"""
@@ -26,7 +28,7 @@ class Ingredient(models.Model):
         verbose_name_plural: str = 'ингредиенты'
 
     def __str__(self) -> str:
-        return self.name
+        return self.name[:TEXT_SYMBOLS]
 
 
 class Tag(models.Model):
@@ -34,7 +36,7 @@ class Tag(models.Model):
 
     name = models.CharField(
         'Название тэга',
-        max_length=200,
+        max_length=50,
         blank=False,
     )
     color = models.CharField(
@@ -56,7 +58,7 @@ class Tag(models.Model):
         verbose_name_plural: str = 'тэги'
 
     def __str__(self) -> str:
-        return self.name
+        return self.name[:TEXT_SYMBOLS]
 
 
 class Recipe(models.Model):
@@ -106,7 +108,7 @@ class Recipe(models.Model):
         verbose_name_plural: str = 'рецепты'
 
     def __str__(self) -> str:
-        return self.name
+        return self.name[:TEXT_SYMBOLS]
 
 
 class RecipeIngredient(models.Model):
@@ -144,4 +146,4 @@ class RecipeIngredient(models.Model):
         )
 
     def __str__(self) -> str:
-        return self.ingredient.name
+        return self.ingredient.name[:TEXT_SYMBOLS]

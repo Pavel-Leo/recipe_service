@@ -46,3 +46,31 @@ class User(AbstractUser):
     @property
     def is_admin(self: any) -> bool:
         return self.is_superuser or self.role == UserRole.ADMIN
+
+
+class Subscription(models.Model):
+    user = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='follower',
+        verbose_name='подписчик',
+    )
+    author = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='following',
+        verbose_name='автор',
+    )
+
+    class Meta:
+        ordering = ['-id']
+        verbose_name = 'подписка'
+        verbose_name_plural = 'подписки'
+        constraints = (
+            models.UniqueConstraint(
+                fields=('user', 'author'), name='unique_subscription',
+            )
+        )
+
+    def __str__(self: any) -> str:
+        return f'{self.user} подписан на {self.author}'
