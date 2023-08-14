@@ -18,3 +18,10 @@ class RecipeAdmin(admin.ModelAdmin):
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
     list_editable: Tuple[str] = ('tags',)
     readonly_fields: Tuple[str] = ('favorite_count',)
+
+
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    list_display: Tuple[str] = ('name', 'measurement_unit')
+    list_filter: Tuple[str] = ('name',)
+    search_fields: Tuple[str] = ('name',)
