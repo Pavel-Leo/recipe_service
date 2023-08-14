@@ -154,22 +154,35 @@ class RecipeIngredient(models.Model):
         return self.ingredient.name[:TEXT_SYMBOLS]
 
 
-class Favorite(models.Model):
-    """Модель для добавления рецептов в избранное."""
+class CommonAbstact(models.Model):
+    """Модель абстрактного класса для Favorite и ShoppingCart."""
 
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='favorites',
-        verbose_name='Пользователь',
+        related_name='%(class)ss',
+        verbose_name='пользователь',
         db_index=True,
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='favorites',
-        verbose_name='Рецепт',
+        related_name='%(class)ss',
+        verbose_name='рецепт',
     )
+
+    class Meta:
+        abstract = True
+
+    def __str__(self) -> str:
+        return (
+            f'{self.user.username} добавил'
+            f' {self.recipe.name} в {self._meta.verbose_name}'
+        )
+
+
+class Favorite(CommonAbstact):
+    """Модель для добавления рецептов в избранное."""
 
     class Meta:
         ordering: List[str] = ['-id']
@@ -180,36 +193,14 @@ class Favorite(models.Model):
             name='unique_favorite',
         )
 
-    def __str__(self) -> str:
-        return f'{self.user.username} добавил {self.recipe.name} в избранное'
 
-
-class ShoppingCart(models.Model):
+class ShoppingCart(CommonAbstact):
     """Модель для списка покупок."""
-
-    user = models.ForeignKey(
-        User,
-        on_delete=models.CASCADE,
-        related_name='shopping_cart',
-        verbose_name='Пользователь',
-        db_index=True,
-    )
-    recipe = models.ForeignKey(
-        Recipe,
-        on_delete=models.CASCADE,
-        related_name='shopping_cart',
-        verbose_name='Рецепт',
-    )
 
     class Meta:
         ordering: List[str] = ['-id']
-        verbose_name: str = 'Список для покупок'
-        verbose_name_plural: str = 'Список для покупок'
+        verbose_name: str = 'cписок для покупок'
+        verbose_name_plural: str = 'cписок для покупок'
         constraints = models.UniqueConstraint(
             fields=('user', 'recipe'), name='unique_shopping_cart',
-        )
-
-    def __str__(self) -> str:
-        return (
-            f'{self.user.username} добавил {self.recipe.name} в список покупок'
         )
