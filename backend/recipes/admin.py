@@ -2,7 +2,14 @@ from typing import Tuple
 
 from django.contrib import admin
 
-from .models import Favorite, Ingredient, Recipe, RecipeIngredient, Tag
+from .models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
 
 
 class RecipeIngredientInline(admin.TabularInline):
@@ -11,7 +18,7 @@ class RecipeIngredientInline(admin.TabularInline):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('name', 'slug', 'color')
+    list_display: Tuple[str] = ('id', 'name', 'slug', 'color')
     search_fields: Tuple[str] = ('name',)
     list_editable: Tuple[str] = ('color', 'slug', 'name')
     prepopulated_fields: Tuple[str] = {'slug': ('name',)}
@@ -20,7 +27,7 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('name', 'author', 'favorite_count')
+    list_display: Tuple[str] = ('id', 'name', 'author', 'favorite_count')
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
     list_editable: Tuple[str] = ('tags',)
     readonly_fields: Tuple[str] = ('favorite_count',)
@@ -30,7 +37,7 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(Ingredient)
 class IngredientAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('name', 'measurement_unit')
+    list_display: Tuple[str] = ('id', 'name', 'measurement_unit')
     list_filter: Tuple[str] = ('name',)
     search_fields: Tuple[str] = ('name',)
     empty_value_display = '-пусто-'
@@ -38,7 +45,15 @@ class IngredientAdmin(admin.ModelAdmin):
 
 @admin.register(Favorite)
 class FavoriteAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('user', 'recipe')
+    list_display: Tuple[str] = ('id', 'user', 'recipe')
+    list_filter: Tuple[str] = ('user', 'recipe')
+    search_fields: Tuple[str] = ('user__username', 'recipe__name')
+    empty_value_display = '-пусто-'
+
+
+@admin.register(ShoppingCart)
+class ShoppingCartAdmin(admin.ModelAdmin):
+    list_display: Tuple[str] = ('id', 'user', 'recipe')
     list_filter: Tuple[str] = ('user', 'recipe')
     search_fields: Tuple[str] = ('user__username', 'recipe__name')
     empty_value_display = '-пусто-'
