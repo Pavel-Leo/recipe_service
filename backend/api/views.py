@@ -7,8 +7,13 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from rest_framework import filters, permissions, viewsets
-from rest_framework.pagination import LimitOffsetPagination
 from users.models import Subscription, User
+from api.serializers import TagSerializer
+from rest_framework import viewsets
+from rest_framework.permissions import AllowAny
 
 
+class TagViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
