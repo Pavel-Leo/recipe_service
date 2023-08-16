@@ -67,11 +67,9 @@ class Subscription(models.Model):
         ordering = ['-id']
         verbose_name = 'подписка'
         verbose_name_plural = 'подписки'
-        constraints = (
+        constraints = [
             models.UniqueConstraint(
-                fields=('user', 'author'), name='unique_subscription',
-            )
-        )
+                fields=['user', 'author'], name='unique_subscription')]
 
     def __str__(self: any) -> str:
         return f'{self.user} подписан на {self.author}'

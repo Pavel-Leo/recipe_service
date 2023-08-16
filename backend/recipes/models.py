@@ -143,12 +143,14 @@ class RecipeIngredient(models.Model):
 
     class Meta:
         ordering: List[str] = ['-id']
-        verbose_name: str = 'Ингредиент рецепта'
-        verbose_name_plural: str = 'Ингредиенты рецептов'
-        constraints = models.UniqueConstraint(
-            fields=('recipe', 'ingredient'),
-            name='unique_recipe_ingredient',
-        )
+        verbose_name: str = 'Количество ингредиента'
+        verbose_name_plural: str = 'Количество ингредиентов'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['recipe', 'ingredient'],
+                name='unique_recipe_ingredient',
+            ),
+        ]
 
     def __str__(self) -> str:
         return self.ingredient.name[:TEXT_SYMBOLS]
@@ -188,10 +190,11 @@ class Favorite(CommonAbstact):
         ordering: List[str] = ['-id']
         verbose_name: str = 'избранный рецепт'
         verbose_name_plural: str = 'избранные рецепты'
-        constraints = models.UniqueConstraint(
-            fields=('user', 'recipe'),
-            name='unique_favorite',
-        )
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='unique_favorite',
+            ),
+        ]
 
 
 class ShoppingCart(CommonAbstact):
@@ -201,6 +204,8 @@ class ShoppingCart(CommonAbstact):
         ordering: List[str] = ['-id']
         verbose_name: str = 'cписок для покупок'
         verbose_name_plural: str = 'cписок для покупок'
-        constraints = models.UniqueConstraint(
-            fields=('user', 'recipe'), name='unique_shopping_cart',
-        )
+        constraints = [
+            models.UniqueConstraint(
+                fields=['user', 'recipe'], name='unique_shopping_cart',
+            ),
+        ]
