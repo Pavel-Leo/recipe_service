@@ -1,6 +1,12 @@
+from api.permissions import IsAdminOwnerOrReadOnly
+from api.serializers import (
+    IngredientSerializer,
+    TagSerializer,
+    UserSerializer,
+    RecipeSerializer,
+)
 from django.shortcuts import get_object_or_404, render
 from django_filters.rest_framework import DjangoFilterBackend
-from backend.api import serializers
 from recipes.models import (
     Favorite,
     Ingredient,
@@ -9,14 +15,14 @@ from recipes.models import (
     ShoppingCart,
     Tag,
 )
-from users.models import Subscription, User
-from api.serializers import TagSerializer, IngredientSerializer, UserSerializer
-from rest_framework import mixins, viewsets
-from rest_framework.permissions import AllowAny
+from djoser.views import UserViewSet
+from rest_framework import mixins, status, viewsets
+from rest_framework.decorators import action
 from rest_framework.filters import SearchFilter
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.decorators import action
-from api.permissions import IsAdminOwnerOrReadOnly
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.response import Response
+from users.models import Subscription, User
 
 
 class TagViewSet(viewsets.ReadOnlyModelViewSet):
@@ -43,17 +49,19 @@ class IngredientViewSet(viewsets.ReadOnlyModelViewSet):
     search_fields = ('^name',)
 
 
-class UserViewSet(mixins.CreateModelMixin, mixins.ListModelMixin, mixins.RetrieveModelMixin, viewsets.GenericViewSet):
+class UserViewSet(UserViewSet):
+    """Viewset для работы с моделью User."""
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAdminOwnerOrReadOnly,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
+    """Viewset для работы с моделью Recipe."""
+
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = (IsAdminOwnerOrReadOnly,)
     pagination_class = PageNumberPagination
     filter_backends = (DjangoFilterBackend,)
 
-    
