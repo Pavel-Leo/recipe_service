@@ -10,6 +10,8 @@ class UserRole(models.TextChoices):
 class User(AbstractUser):
     """Модель пользователя."""
 
+    USERNAME_FIELD = 'email'
+
     role = models.CharField(
         'роль пользователя',
         choices=UserRole.choices,
