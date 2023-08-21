@@ -12,12 +12,6 @@ class User(AbstractUser):
 
     USERNAME_FIELD = 'email'
 
-    role = models.CharField(
-        'роль пользователя',
-        choices=UserRole.choices,
-        default=UserRole.USER,
-        max_length=20,
-    )
     email = models.EmailField(
         'электронная почта',
         max_length=254,
@@ -36,6 +30,7 @@ class User(AbstractUser):
         blank=False,
         null=False,
     )
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     def __str__(self: any) -> str:
         return self.username
@@ -46,12 +41,13 @@ class User(AbstractUser):
         verbose_name_plural = 'пользователи'
 
     @property
-    def is_admin(self: any) -> bool:
+    def is_admin_or_superuser(self: any) -> bool:
         return self.is_superuser or self.role == UserRole.ADMIN
 
 
 class Subscription(models.Model):
     """Модель подписок на автора рецептов."""
+
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
@@ -71,7 +67,9 @@ class Subscription(models.Model):
         verbose_name_plural = 'подписки'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'author'], name='unique_subscription')]
+                fields=['user', 'author'], name='unique_subscription',
+            ),
+        ]
 
     def __str__(self: any) -> str:
         return f'{self.user} подписан на {self.author}'

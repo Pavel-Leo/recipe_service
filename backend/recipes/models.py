@@ -88,6 +88,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
+        related_name='recipes',
         verbose_name='Ингредиенты',
     )
     tags = models.ManyToManyField(
@@ -99,8 +100,10 @@ class Recipe(models.Model):
     cooking_time = models.PositiveIntegerField(
         'Время приготовления в минутах',
         validators=[
-            MinValueValidator(1),
-            'Время приготовления должно быть больше 0',
+            MinValueValidator(
+                1,
+                message='Время приготовления должно быть больше 0',
+            ),
         ],
     )
 
@@ -136,8 +139,9 @@ class RecipeIngredient(models.Model):
     amount = models.PositiveSmallIntegerField(
         'Количество ингредиента',
         validators=[
-            MinValueValidator(1),
-            'Количество ингредиентов должно быть больше 0',
+            MinValueValidator(
+                1, message='Количество ингредиентов должно быть больше 0'
+            ),
         ],
     )
 
@@ -192,7 +196,8 @@ class Favorite(CommonAbstact):
         verbose_name_plural: str = 'избранные рецепты'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_favorite',
+                fields=['user', 'recipe'],
+                name='unique_favorite',
             ),
         ]
 
@@ -206,6 +211,7 @@ class ShoppingCart(CommonAbstact):
         verbose_name_plural: str = 'cписок для покупок'
         constraints = [
             models.UniqueConstraint(
-                fields=['user', 'recipe'], name='unique_shopping_cart',
+                fields=['user', 'recipe'],
+                name='unique_shopping_cart',
             ),
         ]

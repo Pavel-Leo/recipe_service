@@ -27,9 +27,13 @@ class TagAdmin(admin.ModelAdmin):
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('id', 'name', 'author', 'favorite_count')
+    list_display: Tuple[str] = (
+        'id',
+        'name',
+        'author',
+        'favorite_count',
+    )
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
-    list_editable: Tuple[str] = ('tags',)
     readonly_fields: Tuple[str] = ('favorite_count',)
     inlines: Tuple[RecipeIngredientInline] = (RecipeIngredientInline,)
     empty_value_display = '-пусто-'

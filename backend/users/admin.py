@@ -11,7 +11,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         'email',
         'first_name',
         'last_name',
-        'role',
         'password',
     )
     search_fields: Tuple[str] = (
@@ -19,7 +18,6 @@ class CustomUserAdmin(admin.ModelAdmin):
         'email',
         'first_name',
         'last_name',
-        'role',
     )
     list_filter: Tuple[str] = (
         'username',
