@@ -10,6 +10,7 @@ from rest_framework.fields import SerializerMethodField
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.validators import UniqueValidator
 
+from api.validators import check_username
 from recipes.models import Ingredient, Recipe, RecipeIngredient, Tag
 from users.models import Subscription
 
@@ -48,6 +49,8 @@ class CustomUserCreateSerializer(DjoserCreateSerializer):
                 queryset=User.objects.all(),
                 message='Пользователь с таким username уже существует!',
             ),
+            User.username_validator,
+            check_username,
         ],
     )
     password = serializers.CharField(
