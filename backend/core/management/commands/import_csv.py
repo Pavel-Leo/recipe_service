@@ -6,6 +6,10 @@ from recipes.models import Ingredient
 
 
 class Command(BaseCommand):
+    """Команда для импорта данных из файла ingredients.csv в базу данных
+    ингредиентов
+    """
+
     help = 'Импорт данных из ingredients.csv в базу данных ингредиентов'
 
     def handle(self, *args: any, **options: any) -> None:
