@@ -24,7 +24,7 @@ class Ingredient(models.Model):
     )
 
     class Meta:
-        ordering: List[str] = ['-id']
+        ordering: List[str] = ['name']
         verbose_name: str = 'ингредиент'
         verbose_name_plural: str = 'ингредиенты'
 
