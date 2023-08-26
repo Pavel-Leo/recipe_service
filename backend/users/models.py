@@ -1,14 +1,10 @@
 from django.contrib.auth.models import AbstractUser
+from django.core.exceptions import ValidationError
 from django.db import models
 
 
-class UserRole(models.TextChoices):
-    USER = ('user', 'Пользователь')
-    ADMIN = ('admin', 'Администратор')
-
-
 class User(AbstractUser):
-    """Модель пользователя."""
+    """Кастомная переопределенная модель пользователя."""
 
     USERNAME_FIELD = 'email'
 
@@ -30,6 +26,8 @@ class User(AbstractUser):
         blank=False,
         null=False,
     )
+    username = models.CharField(max_length=150, unique=True)
+
     REQUIRED_FIELDS = ['first_name', 'last_name', 'username']
 
     def __str__(self: any) -> str:
@@ -39,10 +37,6 @@ class User(AbstractUser):
         ordering = ['id']
         verbose_name = 'пользователь'
         verbose_name_plural = 'пользователи'
-
-    @property
-    def is_admin_or_superuser(self: any) -> bool:
-        return self.is_superuser or self.role == UserRole.ADMIN
 
 
 class Subscription(models.Model):
@@ -60,6 +54,10 @@ class Subscription(models.Model):
         related_name='following',
         verbose_name='автор',
     )
+
+    def clean(self) -> None:
+        if self.user == self.author:
+            raise ValidationError('Подписка на себя недопустима')
 
     class Meta:
         ordering = ['-id']

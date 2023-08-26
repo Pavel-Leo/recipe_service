@@ -31,12 +31,17 @@ class RecipeAdmin(admin.ModelAdmin):
         'id',
         'name',
         'author',
-        'favorite_count',
+        'added_to_favorites',
     )
+    readonly_fields = ('added_to_favorites',)
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
-    readonly_fields: Tuple[str] = ('favorite_count',)
     inlines: Tuple[RecipeIngredientInline] = (RecipeIngredientInline,)
     empty_value_display = '-пусто-'
+
+    def added_to_favorites(self, obj: Recipe) -> int:
+        return obj.favorites.count()
+
+    added_to_favorites.short_description = 'Добавлено в избранное'
 
 
 @admin.register(Ingredient)
@@ -56,7 +61,7 @@ class FavoriteAdmin(admin.ModelAdmin):
 
 
 @admin.register(ShoppingCart)
-class ShoppingCartAdmin(admin.ModelAdmin):
+class ShoppingCart(admin.ModelAdmin):
     list_display: Tuple[str] = ('id', 'user', 'recipe')
     list_filter: Tuple[str] = ('user', 'recipe')
     search_fields: Tuple[str] = ('user__username', 'recipe__name')

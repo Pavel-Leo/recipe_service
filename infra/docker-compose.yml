@@ -1,6 +1,6 @@
 version: '3.3'
 
-volumes: pg_data_f:
+volumes: pg_data_f
 
 services:
   db:
@@ -20,7 +20,7 @@ services:
     build: ./frontend/
     volumes:
       - ../frontend/:/app/result_build/
-      
+
   nginx:
     image: nginx:1.19.3
     ports:

@@ -1,8 +1,10 @@
 from typing import List
 
+from django.contrib.auth import get_user_model
 from django.core.validators import MinValueValidator
 from django.db import models
-from users.models import User
+
+User = get_user_model()
 
 TEXT_SYMBOLS: int = 20
 
@@ -37,10 +39,11 @@ class Tag(models.Model):
         'Название тэга',
         max_length=50,
         blank=False,
+        unique=True,
     )
     color = models.CharField(
         'Цвет тэга в HEX',
-        max_length=20,
+        max_length=7,
         blank=False,
         unique=True,
     )
@@ -79,22 +82,22 @@ class Recipe(models.Model):
     image = models.ImageField(
         'Изображение рецепта',
         upload_to='recipes_images/',
-        blank=True,
+        blank=False,
     )
     text = models.TextField(
-        'Описание рецепта',
+        verbose_name='Описание рецепта',
         blank=False,
     )
     ingredients = models.ManyToManyField(
         Ingredient,
         through='RecipeIngredient',
-        related_name='recipes',
         verbose_name='Ингредиенты',
+        related_name='recipes',
     )
     tags = models.ManyToManyField(
         Tag,
         verbose_name='Тэги',
-        related_name='recipes',
+        related_name='tags',
         db_index=True,
     )
     cooking_time = models.PositiveIntegerField(
@@ -126,15 +129,13 @@ class RecipeIngredient(models.Model):
         Recipe,
         on_delete=models.CASCADE,
         related_name='recipe_ingredients',
-        verbose_name='Рецепты',
-        db_index=True,
+        verbose_name='Рецепт',
     )
     ingredient = models.ForeignKey(
         Ingredient,
         on_delete=models.CASCADE,
         related_name='recipe_ingredients',
         verbose_name='Связанные ингредиенты',
-        db_index=True,
     )
     amount = models.PositiveSmallIntegerField(
         'Количество ингредиента',
@@ -166,14 +167,11 @@ class CommonAbstact(models.Model):
     user = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
-        related_name='%(class)ss',
         verbose_name='пользователь',
-        db_index=True,
     )
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
-        related_name='%(class)ss',
         verbose_name='рецепт',
     )
 
@@ -200,6 +198,7 @@ class Favorite(CommonAbstact):
                 name='unique_favorite',
             ),
         ]
+        default_related_name = 'favorites'
 
 
 class ShoppingCart(CommonAbstact):
@@ -215,3 +214,4 @@ class ShoppingCart(CommonAbstact):
                 name='unique_shopping_cart',
             ),
         ]
+        default_related_name = 'carts'
