@@ -13,9 +13,8 @@ class IsAdminOwnerOrReadOnly(permissions.BasePermission):
         request: Request,
         view: any,
     ) -> bool:
-        return (
-            request.method in permissions.SAFE_METHODS
-            or request.user.is_authenticated
+        return request.method in permissions.SAFE_METHODS or (
+            request.user and request.user.is_authenticated
         )
 
     def has_object_permission(
@@ -24,7 +23,7 @@ class IsAdminOwnerOrReadOnly(permissions.BasePermission):
         view: any,
         obj: any,
     ) -> bool:
-        return request.method in permissions.SAFE_METHODS or (
-            request.user.is_authenticated
-            and (obj.author == request.user or request.user.is_staff)
-        )
+        return (request.method in permissions.SAFE_METHODS
+                or (request.user and request.user.is_authenticated
+                    and (obj.author == request.user or request.user.is_staff))
+                )
