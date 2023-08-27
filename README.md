@@ -118,7 +118,7 @@ docker compose -f docker-compose.yml exec backend python manage.py collectstatic
 если вы работате на windows в git bash то следующую команду следует выполнить из Windows PoweShell из того же репозитория где находится файл docker-compose.yml чтобы пути построились верно:
 docker compose exec backend cp -r /app/collected_static/. /backend_static/static/
 
-:exclamation: Заполните базу данными командной
+Заполните базу данными командной
 docker compose exec backend python manage.py import_csv
 
 Создайте суперпользователя:
