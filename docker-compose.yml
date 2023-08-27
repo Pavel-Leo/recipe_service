@@ -20,6 +20,7 @@ services:
     volumes:
       - static:/backend_static
       - media:/media
+      - ./docs:/usr/share/nginx/html/docs
 
   frontend:
     env_file: .env
@@ -37,4 +38,4 @@ services:
     volumes:
       - static:/static
       - media:/media
-      - ./docs:/usr/share/nginx/html/api
+      - ./docs:/usr/share/nginx/html/docs
