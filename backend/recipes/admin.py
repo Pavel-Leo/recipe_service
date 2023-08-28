@@ -21,6 +21,7 @@ class TagAdmin(admin.ModelAdmin):
     list_display: Tuple[str] = ('id', 'name', 'slug', 'color')
     search_fields: Tuple[str] = ('name',)
     list_editable: Tuple[str] = ('color', 'slug', 'name')
+    list_filter: Tuple[str] = ('name',)
     prepopulated_fields: Tuple[str] = {'slug': ('name',)}
     empty_value_display = '-пусто-'
 
@@ -34,6 +35,7 @@ class RecipeAdmin(admin.ModelAdmin):
         'added_to_favorites',
     )
     readonly_fields = ('added_to_favorites',)
+    list_filter: Tuple[str] = ('name', 'author', 'tags')
     search_fields: Tuple[str] = ('name', 'author__username', 'tags__name')
     inlines: Tuple[RecipeIngredientInline] = (RecipeIngredientInline,)
     empty_value_display = '-пусто-'
