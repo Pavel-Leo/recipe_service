@@ -5,7 +5,6 @@ from django.db.models.query import QuerySet
 from django_filters.rest_framework import FilterSet
 from django_filters.rest_framework.filters import (BooleanFilter,
                                                    ModelMultipleChoiceFilter)
-
 from recipes.models import Recipe, Tag
 
 User = get_user_model()
