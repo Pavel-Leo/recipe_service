@@ -37,7 +37,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
         history.push('/recipes')
       })
   }, [])
-  
+
   const { url } = useRouteMatch()
   const {
     author = {},
@@ -50,7 +50,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
     is_favorited,
     is_in_shopping_cart
   } = recipe
-  
+
   return <Main>
     <Container>
       <MetaTags>
@@ -74,7 +74,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
           </div>
           <TagsContainer tags={tags} />
           <div>
-            <p className={styles['single-card__text']}><Icons.ClockIcon /> {cooking_time} мин.</p>
+            <p className={styles['single-card__text']}style={{ whiteSpace: 'pre-line' }}><Icons.ClockIcon /> {cooking_time} мин.</p>
             <p className={styles['single-card__text_with_link']}>
               <div className={styles['single-card__text']}>
                 <Icons.UserIcon /> <LinkComponent
@@ -98,7 +98,7 @@ const SingleCard = ({ loadItem, updateOrders }) => {
                 handleAddToCart({ id, toAdd: Number(!is_in_shopping_cart), callback: updateOrders })
               }}
             >
-              
+
             {is_in_shopping_cart ? <><Icons.DoneIcon color="#4A61DD"/>Рецепт добавлен</> : <><Icons.PlusIcon /> Добавить в покупки</>}
             </Button>}
             {(userContext || {}).id !== author.id && authContext && <Button

@@ -119,10 +119,10 @@ docker compose -f docker-compose.yml exec backend python manage.py collectstatic
 docker compose exec backend cp -r /app/collected_static/. /backend_static/static/
 
 Заполните базу данными командной
-docker compose exec backend python manage.py import_csv
+docker compose -f docker-compose.yml exec backend python manage.py import_csv
 
 Создайте суперпользователя:
-docker compose exec backend python manage.py import_csv
+docker compose -f docker-compose.yml exec backend python manage.py createsuperuser
 ```
 
 :exclamation: Чтобы позже можно было создавать рецепты необходимо создать тэги через админ зону

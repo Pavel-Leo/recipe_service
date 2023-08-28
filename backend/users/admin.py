@@ -3,10 +3,11 @@ from typing import Tuple
 from django.contrib import admin
 
 from users.models import Subscription, User
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
 
 @admin.register(User)
-class CustomUserAdmin(admin.ModelAdmin):
+class CustomUserAdmin(BaseUserAdmin):
     list_display: Tuple[str] = (
         'username',
         'email',

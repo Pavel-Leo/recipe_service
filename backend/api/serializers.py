@@ -194,7 +194,7 @@ class RecipeGetSerializer(serializers.ModelSerializer):
     """Сериализатор для получения рецептов."""
 
     author = UserSerializer(read_only=True)
-    image = Base64ImageField()
+    image = serializers.ReadOnlyField(source='image.url')
     tags = TagSerializer(many=True)
     ingredients = RecipeIngredientSerializer(
         many=True, source='recipe_ingredients',
@@ -237,7 +237,7 @@ class RecipePostOrPatchSerializer(RecipeGetSerializer):
     Расширяет родительский класс RecipeGetSerializer, метод create и update
     наследуется от serializers.ModelSerializer родителя RecipeGetSerializer.
     """
-
+    image = Base64ImageField()
     tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
     cooking_time = serializers.IntegerField(min_value=1)
 

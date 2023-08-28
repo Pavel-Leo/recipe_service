@@ -12,7 +12,6 @@ from api.serializers import (
     UserSerializer,
     UserSubscriptionSerializer,
 )
-from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
 from django.http import FileResponse
@@ -119,7 +118,11 @@ class UserViewSet(DjoserUserViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED,
                 )
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+            else:
+                message: Dict[str, str] = {
+                    'error': 'Вы уже подписаны на автора.',
+                }
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == 'DELETE':
             if Subscription.objects.filter(
@@ -133,6 +136,11 @@ class UserViewSet(DjoserUserViewSet):
                 )
                 follow.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                message: Dict[str, str] = {
+                    'error': 'Вы не подписаны на автора.',
+                }
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -149,12 +157,12 @@ class RecipeViewSet(viewsets.ModelViewSet):
         serializer.save(author=self.request.user)
 
     def get_serializer_class(self) -> Serializer:
-        if self.action == 'create' or self.action == 'partial_update':
+        if self.request.method == 'POST' or self.request.method == 'PATCH':
             return RecipePostOrPatchSerializer
         return RecipeGetSerializer
 
     @action(
-        methods=['post', 'delete'],
+        methods=('post', 'delete'),
         detail=True,
         permission_classes=(IsAuthenticated,),
         serializer_class=RecipeCartFavoriteSerializer,
@@ -174,7 +182,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
         recipe = get_object_or_404(Recipe, id=pk)
         if request.method == 'POST':
             if not ShoppingCart.objects.filter(
-                user=user, recipe=recipe,
+                user=user,
+                recipe=recipe,
             ).exists():
                 ShoppingCart.objects.create(user=user, recipe=recipe)
                 serializer = RecipeCartFavoriteSerializer(
@@ -185,24 +194,29 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED,
                 )
-            message: Dict[str, str] = {
-                'error': 'Рецепт уже добавлен в список покупок.',
-            }
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                message: Dict[str, str] = {
+                    'error': 'Рецепт уже добавлен в список покупок.',
+                }
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
         elif request.method == 'DELETE':
             if not ShoppingCart.objects.filter(
-                user=user, recipe=recipe,
+                user=user,
+                recipe=recipe,
             ).exists():
                 message: Dict[str, str] = {
                     'error': 'Рецепта нет в списке покупок.',
                 }
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            shoppig_cart = get_object_or_404(
-                ShoppingCart, user=user, recipe=recipe,
-            )
-            shoppig_cart.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                shoppig_cart = get_object_or_404(
+                    ShoppingCart,
+                    user=user,
+                    recipe=recipe,
+                )
+                shoppig_cart.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         methods=('post', 'delete'),
@@ -234,18 +248,22 @@ class RecipeViewSet(viewsets.ModelViewSet):
                     data=serializer.data,
                     status=status.HTTP_201_CREATED,
                 )
-            message: Dict[str, str] = {
-                'error': 'Рецепт уже добавлен в избранное.',
-            }
-            return Response(message, status=status.HTTP_400_BAD_REQUEST)
+            else:
+                message: Dict[str, str] = {
+                    'error': 'Рецепт уже добавлен в избранное.',
+                }
+                return Response(message, status=status.HTTP_400_BAD_REQUEST)
 
         if request.method == 'DELETE':
             if not Favorite.objects.filter(user=user, recipe=recipe).exists():
                 message: Dict[str, str] = {'error': 'Рецепта нет в избранном.'}
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
-            favorite = get_object_or_404(Favorite, user=user, recipe=recipe)
-            favorite.delete()
-            return Response(status=status.HTTP_204_NO_CONTENT)
+            else:
+                favorite = get_object_or_404(
+                    Favorite, user=user, recipe=recipe,
+                )
+                favorite.delete()
+                return Response(status=status.HTTP_204_NO_CONTENT)
 
     @action(
         detail=False,
@@ -274,16 +292,17 @@ class RecipeViewSet(viewsets.ModelViewSet):
         list_for_shopping: List[str] = []
         for ingredient in ingredients:
             list_for_shopping.append(
-                f"\n{ingredient['ingredient__name']} "
-                f"({ingredient['ingredient__measurement_unit']}) - "
-                f"{ingredient['ingredient_value']}",
+                (
+                    f"\n{ingredient['ingredient__name']} "
+                    f"({ingredient['ingredient__measurement_unit']}) - "
+                    f"{ingredient['ingredient_value']}"
+                ),
             )
         list_for_shopping.sort(key=lambda x: x.lower())
         list_for_shopping.insert(0, preview)
         shopping_list = ''.join(list_for_shopping)
         path_to_file = (
-            f'{settings.MEDIA_ROOT}\\buy_list\\'
-            f'{request.user.username}_shopping_list.txt'
+            f'buy_list\\{request.user.username}_shopping_list.txt'
         )
         with open(path_to_file, 'w+') as file:
             file.write(shopping_list)
