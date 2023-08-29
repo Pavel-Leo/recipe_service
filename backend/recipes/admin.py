@@ -18,7 +18,7 @@ class RecipeIngredientInline(admin.TabularInline):
 
 @admin.register(Tag)
 class TagAdmin(admin.ModelAdmin):
-    list_display: Tuple[str] = ('id', 'name', 'slug', 'color')  # type: ignore
+    list_display: Tuple[str] = ('id', 'name', 'slug', 'color')  # type:
     search_fields: Tuple[str] = ('name',)
     list_editable: Tuple[str] = ('color', 'slug', 'name')
     list_filter: Tuple[str] = ('name',)
