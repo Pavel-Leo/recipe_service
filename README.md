@@ -3,6 +3,9 @@
 ## **Техническое описание проекта foodgram доступно из контейнера docker:**
 http://localhost:9090/api/docs/
 
+и на время работы работы VPS по адресу
+https://ohmyfoodgram.ddns.net/api/docs/
+
 ## **Стэк технологий**
 
 Django==3.2
