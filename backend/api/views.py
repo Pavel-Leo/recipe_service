@@ -1,19 +1,5 @@
 from typing import Dict, List
 
-from django.contrib.auth import get_user_model
-from django.db.models import Sum
-from django.http import FileResponse
-from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
-from djoser.views import UserViewSet as DjoserUserViewSet
-from rest_framework import permissions, status, viewsets
-from rest_framework.decorators import action
-from rest_framework.filters import OrderingFilter, SearchFilter
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
-from rest_framework.response import Response
-from rest_framework.serializers import Serializer
-
 from api.filters import RecipeFilter
 from api.paginations import CustomPagination
 from api.permissions import IsAdminOwnerOrReadOnly
@@ -21,8 +7,21 @@ from api.serializers import (IngredientSerializer,
                              RecipeCartFavoriteSerializer, RecipeGetSerializer,
                              RecipePostOrPatchSerializer, TagSerializer,
                              UserSerializer, UserSubscriptionSerializer)
+from django.contrib.auth import get_user_model
+from django.db.models import Sum
+from django.http import FileResponse
+from django.shortcuts import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from djoser.views import UserViewSet as DjoserUserViewSet
 from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
                             ShoppingCart, Tag)
+from rest_framework import permissions, status, viewsets
+from rest_framework.decorators import action
+from rest_framework.filters import OrderingFilter, SearchFilter
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.request import Request
+from rest_framework.response import Response
+from rest_framework.serializers import Serializer
 from users.models import Subscription
 
 User = get_user_model()
