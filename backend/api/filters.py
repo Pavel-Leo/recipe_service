@@ -3,8 +3,10 @@ from typing import List
 from django.contrib.auth import get_user_model
 from django.db.models.query import QuerySet
 from django_filters.rest_framework import FilterSet
-from django_filters.rest_framework.filters import (BooleanFilter,
-                                                   ModelMultipleChoiceFilter)
+from django_filters.rest_framework.filters import (
+    BooleanFilter,
+    ModelMultipleChoiceFilter,
+)
 
 from recipes.models import Recipe, Tag
 

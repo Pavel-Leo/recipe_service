@@ -17,12 +17,23 @@ from rest_framework.serializers import Serializer
 from api.filters import RecipeFilter
 from api.paginations import CustomPagination
 from api.permissions import IsAdminOwnerOrReadOnly
-from api.serializers import (IngredientSerializer,
-                             RecipeCartFavoriteSerializer, RecipeGetSerializer,
-                             RecipePostOrPatchSerializer, TagSerializer,
-                             UserSerializer, UserSubscriptionSerializer)
-from recipes.models import (Favorite, Ingredient, Recipe, RecipeIngredient,
-                            ShoppingCart, Tag)
+from api.serializers import (
+    IngredientSerializer,
+    RecipeCartFavoriteSerializer,
+    RecipeGetSerializer,
+    RecipePostOrPatchSerializer,
+    TagSerializer,
+    UserSerializer,
+    UserSubscriptionSerializer,
+)
+from recipes.models import (
+    Favorite,
+    Ingredient,
+    Recipe,
+    RecipeIngredient,
+    ShoppingCart,
+    Tag,
+)
 from users.models import Subscription
 
 User = get_user_model()

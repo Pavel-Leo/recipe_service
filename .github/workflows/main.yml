@@ -1,4 +1,4 @@
-name: Main Foodgram workflow pep8
+name: Main Foodgram workflow with notification
 
 on:
   push:
