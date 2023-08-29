@@ -6,6 +6,16 @@ http://localhost:9090/api/docs/
 и на время работы работы VPS по адресу
 https://ohmyfoodgram.ddns.net/api/docs/
 
+Тестовые пользователи в приложении https://ohmyfoodgram.ddns.net/
+
+| email               | name               | password      | role        |
+| :------------------ | :----------------- | :------------ |:----------- |
+| `fionit@mail.ru`    | `Pavel Leontev`    | foodgram123   | **admin**   |
+| `fionit_1@mail.ru`  | `Павел Левап`      | foodgram123   | user        |
+| `fionit_2@mail.ru`  | `Диана Леонтьева`  | foodgram123   | user        |
+| `fionit_3@mail.ru`  | `Денис Денисов`    | foodgram123   | user        |
+
+
 ## **Стэк технологий**
 
 Django==3.2
