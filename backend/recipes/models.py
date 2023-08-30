@@ -1,7 +1,7 @@
 from typing import List
 
 from django.contrib.auth import get_user_model
-from django.core.validators import MinValueValidator
+from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 
 User = get_user_model()
@@ -27,6 +27,11 @@ class Ingredient(models.Model):
         ordering: List[str] = ['name']
         verbose_name: str = 'ингредиент'
         verbose_name_plural: str = 'ингредиенты'
+        constraints = [
+            models.UniqueConstraint(
+                fields=['name', 'measurement_unit'], name='unique_ingredient',
+            ),
+        ]
 
     def __str__(self) -> str:
         return self.name[:TEXT_SYMBOLS]
@@ -52,7 +57,6 @@ class Tag(models.Model):
         max_length=100,
         blank=False,
         unique=True,
-        db_index=True,
     )
 
     class Meta:
@@ -72,7 +76,6 @@ class Recipe(models.Model):
         on_delete=models.CASCADE,
         related_name='recipes',
         verbose_name='Автор рецепта',
-        db_index=True,
     )
     name = models.CharField(
         'Название рецепта',
@@ -106,6 +109,10 @@ class Recipe(models.Model):
             MinValueValidator(
                 1,
                 message='Время приготовления должно быть больше 0',
+            ),
+            MaxValueValidator(
+                4320,
+                message='Время приготовления не должно превышать 4320 минут',
             ),
         ],
     )
@@ -141,7 +148,11 @@ class RecipeIngredient(models.Model):
         'Количество ингредиента',
         validators=[
             MinValueValidator(
-                1, message='Количество ингредиентов должно быть больше 0',
+                1,
+                message='Количество ингредиентов должно быть больше 0',
+            ),
+            MaxValueValidator(
+                100, message='Количество ингредиентов не должно превышать 100',
             ),
         ],
     )

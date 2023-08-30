@@ -1,8 +1,9 @@
+import io
 from typing import Dict, List
 
 from django.contrib.auth import get_user_model
 from django.db.models import Sum
-from django.http import FileResponse
+from django.http import FileResponse, HttpResponse
 from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from djoser.views import UserViewSet as DjoserUserViewSet
@@ -261,7 +262,9 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 return Response(message, status=status.HTTP_400_BAD_REQUEST)
             else:
                 favorite = get_object_or_404(
-                    Favorite, user=user, recipe=recipe,
+                    Favorite,
+                    user=user,
+                    recipe=recipe,
                 )
                 favorite.delete()
                 return Response(status=status.HTTP_204_NO_CONTENT)
@@ -290,24 +293,20 @@ class RecipeViewSet(viewsets.ModelViewSet):
             'Полный список ингредиентов для рептов из списка покупок'
             f' {request.user.get_full_name()}:\n'
         )
-        list_for_shopping: List[str] = []
+        list_for_shopping: List[str] = io.StringIO()
+        list_for_shopping.write(preview)
         for ingredient in ingredients:
-            list_for_shopping.append(
+            list_for_shopping.write(
                 (
                     f"\n{ingredient['ingredient__name']} "
                     f"({ingredient['ingredient__measurement_unit']}) - "
                     f"{ingredient['ingredient_value']}"
                 ),
             )
-        list_for_shopping.sort(key=lambda x: x.lower())
-        list_for_shopping.insert(0, preview)
-        shopping_list = ''.join(list_for_shopping)
-        path_to_file = (
-            f'buy_list\\{request.user.username}_shopping_list.txt'
+
+        list_for_shopping.seek(0)
+        response = HttpResponse(list_for_shopping, content_type='text/plain')
+        response['Content-Disposition'] = (
+            f'attachment; filename="{request.user.username}_shopping_list.txt"'
         )
-        with open(path_to_file, 'w+') as file:
-            file.write(shopping_list)
-        return FileResponse(
-            open(path_to_file, 'rb'),
-            status=status.HTTP_200_OK,
-        )
+        return response

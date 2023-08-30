@@ -3,6 +3,7 @@ from typing import Any, Dict, List, Tuple
 
 from django.contrib.auth import get_user_model
 from django.core.files.base import ContentFile
+from django.db import transaction
 from djoser.serializers import UserCreateSerializer as DjoserCreateSerializer
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
@@ -183,6 +184,7 @@ class RecipeIngredientSerializer(serializers.ModelSerializer):
     )
     amount = serializers.IntegerField(
         min_value=1,
+        max_value=100,
     )
 
     class Meta:
@@ -239,8 +241,9 @@ class RecipePostOrPatchSerializer(RecipeGetSerializer):
     """
     image = Base64ImageField()
     tags = PrimaryKeyRelatedField(many=True, queryset=Tag.objects.all())
-    cooking_time = serializers.IntegerField(min_value=1)
+    cooking_time = serializers.IntegerField(min_value=1, max_value=4320)
 
+    @transaction.atomic
     def create(self, validated_data: dict) -> Recipe:
         """Метод для создания рецепта."""
         ingredients = validated_data.pop('recipe_ingredients')
@@ -254,6 +257,7 @@ class RecipePostOrPatchSerializer(RecipeGetSerializer):
             )
         return recipe
 
+    @transaction.atomic
     def update(self, instance: Recipe, validated_data: dict) -> Recipe:
         """Метод для обновления рецепта."""
         ingredients = validated_data.pop('recipe_ingredients', None)
@@ -266,9 +270,8 @@ class RecipePostOrPatchSerializer(RecipeGetSerializer):
             )
         return recipe
 
-    def validate_ingredients(self, value: List[Dict]) -> List[Dict]:
+    def validate_ingredients(self, ingredients: List[Dict]) -> List[Dict]:
         """Метод для валидации ингредиентов."""
-        ingredients = value
         ingredients_set = set(
             ingr.get('ingredient').get('id') for ingr in ingredients
         )
@@ -278,4 +281,8 @@ class RecipePostOrPatchSerializer(RecipeGetSerializer):
             raise ValidationError(
                 'Количество ингредиента не может быть меньше 1',
             )
-        return value
+        if any(int(ingr['amount']) > 100 for ingr in ingredients):
+            raise ValidationError(
+                'Количество ингредиента не может быть больше 100',
+            )
+        return ingredients
