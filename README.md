@@ -2,7 +2,7 @@
 
 # **Foodgram project react**
 
-## **Техническое описание проекта foodgram доступно из контейнера docker:**
+## **Техническое описание проекта foodgram доступно из контейнера docker: **
 http://localhost:9090/api/docs/
 
 и на время работы работы VPS по адресу
