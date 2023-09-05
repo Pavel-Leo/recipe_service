@@ -1,6 +1,6 @@
 ![example workflow](https://github.com/Pavel-Leo/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
-# **Foodgram project react**
+# **recipe_service**
 
 ## **Техническое описание проекта foodgram доступно из контейнера docker: **
 http://localhost:9090/api/docs/
