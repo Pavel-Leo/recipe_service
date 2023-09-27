@@ -125,6 +125,7 @@ DB_PORT=5432
 Из корневой папки где находится файл docker-compose.yml выполнить команды по очереди:
 
 ```
+docker compose up
 docker compose -f docker-compose.yml exec backend python manage.py makemigrations
 docker compose -f docker-compose.yml exec backend python manage.py migrate
 docker compose -f docker-compose.yml exec backend python manage.py collectstatic
