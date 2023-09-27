@@ -1,4 +1,3 @@
-![example workflow](https://github.com/Pavel-Leo/foodgram-project-react/actions/workflows/main.yml/badge.svg)
 
 # **recipe_service**
 
